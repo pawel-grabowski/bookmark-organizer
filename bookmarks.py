@@ -36,7 +36,7 @@ def read_user_keywords():
 #%% MAIN CODE
 
 #User inputs file name/path
-filename = 'C:/Users/Paweł/Documents/Projekty/PyBookmarkOrganizer/input/bookmarks_31.05.2020.html'
+filename = 'C:/Users/Paweł/Documents/Projekty/PyBookmarkOrganizer/input/bookmarks_10.06.2020.html'
 
 mapping = read_mapping()
 keywords = mapping.keys()
@@ -61,15 +61,38 @@ for keyword in keywords:
             if keyword_line in line:
                 linesHTML.remove(line)
                 break
-
-    startFolder = "<DL><p> \n <DT><H3> " + keyword + "</H3> \n"
+        
+        #Normalize indentation in output file
+        keyword_line = keyword_line.strip()
+        keyword_line = 8*" "+keyword_line      
+    
+    #Define HTML tags for folder structure
+    startFolder = "<DL><p> \n    <DT><H3> " + keyword + "</H3> \n"
     endFolder = "</DL><p> \n"
+
     #Inserts the contents of list_keyword back into linesHTML so the folder for the bookmarks can be created.
     keyword_lines.insert(0,startFolder) # opening folder definition
     keyword_lines.insert(len(keyword_lines),endFolder) # ending folder definition
     linesHTML[9:9] = keyword_lines # first line after meta-data & opening actual  list, for folder definition
+
+#Group for second level folders
+groups=[]
+placeholder_lines=[]
+for keyword in keywords:
+    if not mapping[keyword] in groups and mapping[keyword]!=keyword:
+        groups.append(mapping[keyword])
+
+# Add empty (temporary) folder for groups
+for group in groups:
+    startFolder = "<DL><p> \n    <DT><H3> " + group + "</H3> \n"
+    endFolder = "</DL><p> \n"
+    placeholder_lines.insert(len(placeholder_lines),startFolder) # opening folder definition
+    placeholder_lines.insert(len(placeholder_lines),endFolder) # ending folder definition
     
+linesHTML[9:9] = placeholder_lines # first line after meta-data & opening actual  list, for folder definition
+
 #Creates a new HTML file that will include the folder of the bookmarks
 newFilename = filename.replace(".html","_new.html")
 with open(newFilename,"w", encoding='utf-8') as file_write:
     file_write.writelines(linesHTML)
+

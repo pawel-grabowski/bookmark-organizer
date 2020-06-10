@@ -12,7 +12,7 @@ cda.pl|Do_obejrzenia
 youtube.com|Do_obejrzenia
 excel|Excel_VBA
 vba|Excel_VBA
-python|Python
+python|python
 wikipedia
 github
 Jezyki
